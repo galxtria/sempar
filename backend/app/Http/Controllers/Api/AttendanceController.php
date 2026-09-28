@@ -35,6 +35,13 @@ class AttendanceController extends Controller
             return response()->json(['error' => 'PIN telah kedaluwarsa. PIN hanya aktif 10 menit setelah acara dimulai.'], 422);
         }
 
+        $hasBooking = \App\Models\Booking::where('seminar_id', $validated['seminar_id'])
+            ->where('student_nim', $validated['student_nim'])
+            ->exists();
+        if (!$hasBooking) {
+            return response()->json(['error' => 'Anda belum melakukan reservasi kursi untuk seminar ini. Reservasi dulu sebelum mencatat kehadiran.'], 422);
+        }
+
         $exists = Attendance::where('seminar_id', $validated['seminar_id'])
             ->where('student_nim', $validated['student_nim'])
             ->whereIn('status', ['valid', 'pending'])
@@ -63,6 +70,7 @@ class AttendanceController extends Controller
             'student_name' => $validated['student_name'],
             'summary' => $summary,
             'status' => $status,
+            'ip_address' => $request->ip(),
         ];
 
         if ($attendance) {

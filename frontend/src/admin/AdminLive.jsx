@@ -62,6 +62,11 @@ function AdminLive() {
   const pendings = detail?.attendances?.filter(a => a.status === 'pending') || [];
   const valids = detail?.attendances?.filter(a => a.status === 'valid') || [];
   const rejecteds = detail?.attendances?.filter(a => a.status === 'rejected') || [];
+  const ipCounts = {};
+  (detail?.attendances || []).forEach(a => {
+    if (a.ip_address) ipCounts[a.ip_address] = (ipCounts[a.ip_address] || 0) + 1;
+  });
+  const sharedIp = Object.entries(ipCounts).filter(([, c]) => c > 1);
 
   return (
     <div className="space-y-6">
@@ -152,16 +157,26 @@ function AdminLive() {
 
           <div className="bg-white rounded-lg border border-gray-200 p-4">
             <h3 className="font-bold text-gray-900 mb-3">Arus Kehadiran ({detail.attendances?.length || 0})</h3>
+            {sharedIp.length > 0 && (
+              <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800">
+                <strong>Mencurigakan:</strong> {sharedIp.map(([ip, c]) => `${c} perangkat/NIM dari IP ${ip}`).join('; ')} — kemungkinan satu orang mengabsenkan banyak NIM.
+              </div>
+            )}
             <div className="space-y-2 max-h-96 overflow-y-auto">
               {(detail.attendances || []).map(a => (
                 <div key={a.id} className="flex justify-between items-center p-2 rounded border border-gray-100 text-sm">
                   <div>
                     <p className="font-semibold text-gray-900">{a.student_name} <span className="text-gray-500 font-normal">({a.student_nim})</span></p>
-                    <p className="text-xs text-gray-500">{new Date(a.created_at).toLocaleString('id-ID')}</p>
+                    <p className="text-xs text-gray-500">{new Date(a.created_at).toLocaleString('id-ID')}{a.ip_address ? ` • IP ${a.ip_address}` : ''}</p>
                   </div>
-                  <span className={`text-xs font-bold px-2 py-1 rounded ${a.status === 'valid' ? 'bg-green-200 text-green-800' : a.status === 'pending' ? 'bg-amber-200 text-amber-800' : 'bg-red-200 text-red-800'}`}>
-                    {a.status === 'valid' ? 'VALID' : a.status === 'pending' ? 'PENDING' : 'DITOLAK'}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    {a.ip_address && ipCounts[a.ip_address] > 1 && (
+                      <span className="text-xs font-bold px-2 py-1 rounded bg-red-200 text-red-800">IP SAMA</span>
+                    )}
+                    <span className={`text-xs font-bold px-2 py-1 rounded ${a.status === 'valid' ? 'bg-green-200 text-green-800' : a.status === 'pending' ? 'bg-amber-200 text-amber-800' : 'bg-red-200 text-red-800'}`}>
+                      {a.status === 'valid' ? 'VALID' : a.status === 'pending' ? 'PENDING' : 'DITOLAK'}
+                    </span>
+                  </div>
                 </div>
               ))}
               {(!detail.attendances || detail.attendances.length === 0) && (

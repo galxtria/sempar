@@ -31,7 +31,7 @@ Route::get('seminars/filter/{type}', function ($type) {
         ->makeHidden(['pin']);
 });
 
-Route::post('bookings', [BookingController::class, 'store']);
+Route::post('bookings', [BookingController::class, 'store'])->middleware('throttle:20,1');
 Route::get('bookings/my', [BookingController::class, 'myBookings']);
 Route::delete('bookings/{booking}', [BookingController::class, 'cancel']);
 
@@ -42,7 +42,7 @@ Route::get('user', function (Request $request) {
 Route::apiResource('seminars', SeminarController::class)->except(['update']);
 Route::put('seminars/{seminar}', [SeminarController::class, 'update']);
 Route::post('seminars/{seminar}/regenerate-pin', [SeminarController::class, 'regeneratePin']);
-Route::post('attendances', [AttendanceController::class, 'store']);
+Route::post('attendances', [AttendanceController::class, 'store'])->middleware('throttle:10,1');
 Route::patch('attendances/{attendance}', [AttendanceController::class, 'review']);
 Route::get('seminars/{seminar}/attendances', [AttendanceController::class, 'show']);
 Route::get('attendances/history', [AttendanceController::class, 'history']);
