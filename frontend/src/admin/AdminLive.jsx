@@ -113,6 +113,9 @@ function AdminLive() {
                 <Clock className="w-3 h-3" />
                 {pinExpired ? 'PIN kedaluwarsa' : `Berlaku hingga ${formatTime(detail.expires_at)}`}
               </p>
+              {detail.strict_network && (
+                <p className="mt-2 inline-block text-xs font-bold px-2 py-1 bg-white/20 rounded">WAJIB JARINGAN KAMPUS</p>
+              )}
             </div>
             <div className="grid grid-cols-3 gap-3">
               <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-center">
@@ -142,7 +145,8 @@ function AdminLive() {
                     <div className="flex flex-col sm:flex-row sm:justify-between gap-2">
                       <div className="flex-1">
                         <p className="font-semibold text-gray-900 text-sm">{a.student_name} <span className="text-gray-500 font-normal">({a.student_nim})</span></p>
-                        <p className="text-xs text-gray-600 mt-1 italic">"{a.summary}"</p>
+                        <p className="text-xs text-gray-600 mt-1 italic">"{a.summary || '—'}"</p>
+                        {a.review_note && <p className="text-xs text-amber-700 mt-1 font-semibold">{a.review_note}{a.ip_address ? ` IP ${a.ip_address}` : ''}</p>}
                       </div>
                       <div className="flex gap-2">
                         <button onClick={() => handleReview(a.id, 'valid')} className="px-3 py-1 text-xs font-bold bg-green-600 text-white rounded hover:bg-green-700">Setujui</button>

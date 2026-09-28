@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Seminar extends Model
 {
-    protected $fillable = ['title', 'student_name', 'supervisor', 'examiner_1', 'examiner_2', 'description', 'type', 'room', 'date_time', 'pin', 'expires_at', 'capacity'];
-    
-    protected $casts = ['date_time' => 'datetime', 'expires_at' => 'datetime'];
+    protected $fillable = ['title', 'student_name', 'supervisor', 'examiner_1', 'examiner_2', 'description', 'type', 'room', 'date_time', 'pin', 'expires_at', 'capacity', 'strict_network'];
+
+    protected $casts = ['date_time' => 'datetime', 'expires_at' => 'datetime', 'strict_network' => 'boolean'];
 
     public function attendances(): HasMany
     {

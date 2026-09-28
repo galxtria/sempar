@@ -49,6 +49,7 @@ function AdminList({ readOnly = false }) {
       type: s.type,
       room: s.room,
       capacity: s.capacity,
+      strict_network: !!s.strict_network,
     });
   };
 
@@ -56,7 +57,7 @@ function AdminList({ readOnly = false }) {
     e.preventDefault();
     setSaving(true);
     try {
-      const res = await api.put(`/seminars/${editing.id}`, { ...editForm, capacity: parseInt(editForm.capacity) });
+      const res = await api.put(`/seminars/${editing.id}`, { ...editForm, capacity: parseInt(editForm.capacity), strict_network: !!editForm.strict_network });
       setSeminars(prev => prev.map(s => s.id === editing.id ? res.data : s));
       setSelected(res.data);
       setEditing(null);
@@ -288,6 +289,13 @@ function AdminList({ readOnly = false }) {
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Deskripsi</label>
                 <textarea rows="2" value={editForm.description} onChange={e => setEditForm({ ...editForm, description: e.target.value })} className="w-full px-4 py-2 border border-gray-300 rounded-lg" />
               </div>
+              <label className="flex items-start gap-3 p-3 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer">
+                <input type="checkbox" checked={!!editForm.strict_network} onChange={e => setEditForm({ ...editForm, strict_network: e.target.checked })} className="w-4 h-4 mt-1" />
+                <span>
+                  <span className="block text-sm font-semibold text-gray-700">Wajib jaringan kampus</span>
+                  <span className="block text-xs text-gray-500">Presensi dari luar IP kampus ditahan untuk verifikasi manual</span>
+                </span>
+              </label>
               <button type="submit" disabled={saving} className="w-full bg-primary text-white py-2.5 rounded-lg font-semibold hover:bg-accent disabled:opacity-50">
                 {saving ? 'Menyimpan...' : 'Simpan Perubahan'}
               </button>

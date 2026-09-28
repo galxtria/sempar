@@ -26,10 +26,12 @@ class SeminarController extends Controller
             'type' => 'required|in:sempro,skripsi',
             'room' => 'required|string|max:255',
             'capacity' => 'nullable|integer|min:1|max:500',
+            'strict_network' => 'nullable|boolean',
             'date_time' => 'required|date_format:Y-m-d H:i:s',
         ]);
 
         $validated['capacity'] = $validated['capacity'] ?? 30;
+        $validated['strict_network'] = (bool) ($validated['strict_network'] ?? false);
 
         // PIN unik per seminar (hindari collision)
         do {
@@ -59,6 +61,7 @@ class SeminarController extends Controller
             'type' => 'sometimes|required|in:sempro,skripsi',
             'room' => 'sometimes|required|string|max:255',
             'capacity' => 'nullable|integer|min:1|max:500',
+            'strict_network' => 'nullable|boolean',
             'date_time' => 'sometimes|required|date_format:Y-m-d H:i:s',
         ]);
 

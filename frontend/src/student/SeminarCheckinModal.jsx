@@ -149,6 +149,11 @@ function SeminarCheckinModal({ seminar, nim, name, onClose, onChanged }) {
                 <p className="text-sm text-amber-900">
                   <strong>Panduan:</strong> reservasi kursi dulu, hadir di ruangan, dengarkan PIN dari panitia, lalu catat kehadiran.
                 </p>
+                {seminar.strict_network && (
+                  <p className="text-sm text-amber-900 mt-2">
+                    <strong>Perhatian:</strong> seminar ini mewajibkan jaringan internet kampus (WiFi kampus). Presensi dari luar jaringan ditahan untuk verifikasi manual.
+                  </p>
+                )}
               </div>
             </div>
           )}

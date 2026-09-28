@@ -53,9 +53,19 @@ class AttendanceController extends Controller
         // Ringkasan opsional: kosong = langsung valid, diisi = dicek AI
         if ($summary === '') {
             $status = 'valid';
+            $reviewNote = null;
         } else {
             $aiResult = app('gemini')->validateSummary($summary, $seminar->title);
             $status = $aiResult === null ? 'pending' : ($aiResult ? 'valid' : 'rejected');
+            $reviewNote = $aiResult === null ? 'AI tidak dapat memastikan, perlu review manual.' : null;
+        }
+
+        // Mode jaringan kampus: di luar IP kampus = pending + catatan (bukan tolak langsung,
+        // karena mahasiswa sah bisa sedang memakai data seluler di ruangan)
+        $clientIp = $request->ip();
+        if ($status === 'valid' && $seminar->strict_network && !$this->isCampusIp($clientIp)) {
+            $status = 'pending';
+            $reviewNote = 'Di luar jaringan kampus (' . $clientIp . ').';
         }
 
         // Jika pernah ditolak, perbarui baris yang sama agar bisa mencoba lagi
@@ -71,6 +81,7 @@ class AttendanceController extends Controller
             'summary' => $summary,
             'status' => $status,
             'ip_address' => $request->ip(),
+            'review_note' => $reviewNote ?? null,
         ];
 
         if ($attendance) {
@@ -92,6 +103,32 @@ class AttendanceController extends Controller
     public function show(Seminar $seminar)
     {
         return $seminar->attendances()->orderByDesc('created_at')->get();
+    }
+
+    // Daftar IP / CIDR jaringan kampus dari env CAMPUS_IPS (koma). Loopback selalu lolos (testing).
+    private function isCampusIp(?string $ip): bool
+    {
+        if (!$ip || $ip === '127.0.0.1' || $ip === '::1') {
+            return true;
+        }
+        $ranges = array_filter(array_map('trim', explode(',', (string) env('CAMPUS_IPS', ''))));
+        foreach ($ranges as $range) {
+            if (str_contains($range, '/')) {
+                [$subnet, $bits] = explode('/', $range, 2);
+                $ipLong = ip2long($ip);
+                $subLong = ip2long($subnet);
+                if ($ipLong === false || $subLong === false) {
+                    continue;
+                }
+                $mask = -1 << (32 - (int) $bits);
+                if (($ipLong & $mask) === ($subLong & $mask)) {
+                    return true;
+                }
+            } elseif ($ip === $range) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // Review manual oleh panitia untuk status pending

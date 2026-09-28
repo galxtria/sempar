@@ -12,6 +12,7 @@ const emptyForm = {
   type: 'sempro',
   room: '',
   capacity: 30,
+  strict_network: false,
   date_time: ''
 };
 
@@ -32,7 +33,8 @@ function AdminCreate() {
       const res = await api.post('/seminars', {
         ...form,
         date_time: datetime,
-        capacity: parseInt(form.capacity)
+        capacity: parseInt(form.capacity),
+        strict_network: !!form.strict_network,
       });
       setCreatedPin(res.data.pin);
       setForm(emptyForm);
@@ -169,6 +171,20 @@ function AdminCreate() {
                 onChange={(e) => setForm({ ...form, date_time: e.target.value })}
                 required
               />
+            </div>
+            <div className="md:col-span-2">
+              <label className="flex items-start gap-3 p-3 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={!!form.strict_network}
+                  onChange={(e) => setForm({ ...form, strict_network: e.target.checked })}
+                  className="w-4 h-4 mt-1"
+                />
+                <span>
+                  <span className="block text-sm font-semibold text-gray-700">Wajib jaringan kampus</span>
+                  <span className="block text-xs text-gray-500">Presensi dari luar IP kampus ditahan sebagai menunggu verifikasi (atur daftar IP di CAMPUS_IPS)</span>
+                </span>
+              </label>
             </div>
           </div>
 
