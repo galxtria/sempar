@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LogIn, Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import api from './config/api';
 
 function LoginPage({ onLogin }) {
@@ -30,10 +30,8 @@ function LoginPage({ onLogin }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-white to-gray-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-xl shadow-lg border border-gray-200 p-8">
-        <div className="flex justify-center mb-6">
-          <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-            <LogIn className="w-6 h-6 text-white" />
-          </div>
+        <div className="flex justify-center mb-4">
+          <img src="/logo.svg" alt="Logo SEMPAR" className="w-16 h-16" />
         </div>
         <h1 className="text-2xl font-bold text-center text-gray-900 mb-2">SEMPAR</h1>
         <p className="text-center text-gray-600 mb-8">Seminar Participation Tracker</p>
