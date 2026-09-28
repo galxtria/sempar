@@ -43,7 +43,7 @@ function LoginPage({ onLogin }) {
             <label className="block text-sm font-medium text-gray-700 mb-1">Username / NIM</label>
             <input
               type="text"
-              placeholder="2401010101 atau admin@sempar.id"
+              placeholder="NIM atau email kampus"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
               value={form.username}
               onChange={(e) => setForm({ ...form, username: e.target.value })}
@@ -80,10 +80,7 @@ function LoginPage({ onLogin }) {
         </form>
 
         <div className="mt-6 pt-6 border-t border-gray-200">
-          <p className="text-xs text-gray-600 mb-2 font-semibold">Akun Demo:</p>
-          <p className="text-xs text-gray-500">Mahasiswa: 2401010101 / ***REMOVED***</p>
-          <p className="text-xs text-gray-500">Dosen: dosen@sempar.id / ***REMOVED***</p>
-          <p className="text-xs text-gray-500">Admin: admin@sempar.id / ***REMOVED***</p>
+          <p className="text-xs text-gray-500 text-center">Gunakan akun yang diberikan panitia / bagian akademik.</p>
         </div>
       </div>
     </div>

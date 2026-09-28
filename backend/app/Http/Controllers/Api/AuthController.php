@@ -7,12 +7,24 @@ use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    // Hardcoded users (demo): mahasiswa, dosen pembimbing/penguji, admin akademik
-    private $users = [
-        ['username' => '2401010101', 'password' => '***REMOVED***', 'name' => 'Mahasiswa', 'role' => 'mahasiswa'],
-        ['username' => 'dosen@sempar.id', 'password' => '***REMOVED***', 'name' => 'Dosen Pembimbing', 'role' => 'dosen'],
-        ['username' => 'admin@sempar.id', 'password' => '***REMOVED***', 'name' => 'Admin', 'role' => 'admin'],
-    ];
+    // Demo accounts dibaca dari environment (.env) — JANGAN hardcode password di repo.
+    // Lihat backend/.env.example untuk daftar key yang dibutuhkan.
+    private function users(): array
+    {
+        return array_values(array_filter([
+            $this->demoUser(env('DEMO_STUDENT_NIM'), env('DEMO_STUDENT_PASS'), env('DEMO_STUDENT_NAME', 'Mahasiswa'), 'mahasiswa'),
+            $this->demoUser(env('DEMO_LECTURER_USER'), env('DEMO_LECTURER_PASS'), env('DEMO_LECTURER_NAME', 'Dosen Pembimbing'), 'dosen'),
+            $this->demoUser(env('DEMO_ADMIN_USER'), env('DEMO_ADMIN_PASS'), env('DEMO_ADMIN_NAME', 'Admin'), 'admin'),
+        ]));
+    }
+
+    private function demoUser($username, $password, $name, $role): ?array
+    {
+        if (!$username || !$password) {
+            return null;
+        }
+        return ['username' => $username, 'password' => $password, 'name' => $name, 'role' => $role];
+    }
 
     public function login(Request $request)
     {
@@ -21,9 +33,9 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        $user = collect($this->users)->first(fn($u) => $u['username'] === $validated['username']);
+        $user = collect($this->users())->first(fn($u) => $u['username'] === $validated['username']);
 
-        if (!$user || $user['password'] !== $validated['password']) {
+        if (!$user || !hash_equals($user['password'], $validated['password'])) {
             return response()->json(['error' => 'Username atau password salah'], 401);
         }
 
