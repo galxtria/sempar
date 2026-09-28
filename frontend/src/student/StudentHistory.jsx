@@ -92,7 +92,7 @@ function StudentHistory() {
                     </p>
                     <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-100">
                       <p className="text-xs font-semibold text-gray-600 mb-1">RINGKASAN SAYA</p>
-                      <p className="text-sm text-gray-700">{h.summary}</p>
+                      <p className="text-sm text-gray-700">{h.summary || '— (tanpa ringkasan)'}</p>
                     </div>
                   </div>
                   <span className={`text-xs font-bold px-2 py-1 rounded whitespace-nowrap ${badge[h.status] || badge.pending}`}>

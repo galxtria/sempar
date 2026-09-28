@@ -52,7 +52,7 @@ function HomePage() {
           <div className="text-center">
             <div className="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center font-bold mx-auto mb-3">4</div>
             <h3 className="font-semibold text-gray-900 mb-2">Absen</h3>
-            <p className="text-sm text-gray-600">Input PIN & ringkasan materi untuk pencatatan</p>
+            <p className="text-sm text-gray-600">Masukkan PIN yang diumumkan untuk pencatatan</p>
           </div>
         </div>
       </div>

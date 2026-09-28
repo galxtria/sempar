@@ -16,8 +16,10 @@ class AttendanceController extends Controller
             'student_nim' => 'required|string',
             'student_name' => 'required|string',
             'pin' => 'required|string|size:4',
-            'summary' => 'required|string|min:10',
+            'summary' => 'nullable|string|max:2000',
         ]);
+
+        $summary = trim($validated['summary'] ?? '');
 
         $seminar = Seminar::findOrFail($validated['seminar_id']);
 
@@ -41,8 +43,13 @@ class AttendanceController extends Controller
             return response()->json(['error' => 'NIM ini sudah melakukan presensi untuk seminar ini.'], 422);
         }
 
-        $aiResult = app('gemini')->validateSummary($validated['summary'], $seminar->title);
-        $status = $aiResult === null ? 'pending' : ($aiResult ? 'valid' : 'rejected');
+        // Ringkasan opsional: kosong = langsung valid, diisi = dicek AI
+        if ($summary === '') {
+            $status = 'valid';
+        } else {
+            $aiResult = app('gemini')->validateSummary($summary, $seminar->title);
+            $status = $aiResult === null ? 'pending' : ($aiResult ? 'valid' : 'rejected');
+        }
 
         // Jika pernah ditolak, perbarui baris yang sama agar bisa mencoba lagi
         $attendance = Attendance::where('seminar_id', $validated['seminar_id'])
@@ -54,7 +61,7 @@ class AttendanceController extends Controller
             'seminar_id' => $validated['seminar_id'],
             'student_nim' => $validated['student_nim'],
             'student_name' => $validated['student_name'],
-            'summary' => $validated['summary'],
+            'summary' => $summary,
             'status' => $status,
         ];
 

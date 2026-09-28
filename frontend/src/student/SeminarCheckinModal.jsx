@@ -213,10 +213,10 @@ function SeminarCheckinModal({ seminar, nim, name, onClose, onChanged }) {
                 <input type="text" placeholder="Contoh: 1234" maxLength="4" value={form.pin} onChange={(e) => setForm({ ...form, pin: e.target.value })} className="w-full px-4 py-2 border border-gray-300 rounded-lg font-mono text-lg tracking-widest" required />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Ringkasan Materi Seminar</label>
-                <p className="text-xs text-gray-600 mb-2">Tulis 1-2 kalimat dengan kata-katamu sendiri tentang isi seminar ini</p>
-                <textarea placeholder="Tulis ringkasan di sini..." value={form.summary} onChange={(e) => setForm({ ...form, summary: e.target.value })} rows="4" className="w-full px-4 py-2 border border-gray-300 rounded-lg" required />
-                <p className={`text-xs mt-1 ${wordCount >= 10 ? 'text-green-600 font-semibold' : 'text-gray-500'}`}>{wordCount} kata • minimal 10 kata yang relevan dengan judul</p>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Ringkasan Materi Seminar <span className="font-normal text-gray-500">(opsional)</span></label>
+                <p className="text-xs text-gray-600 mb-2">Boleh dikosongkan. Jika diisi, ringkasan dicek AI dan harus relevan dengan judul</p>
+                <textarea placeholder="Tulis ringkasan di sini..." value={form.summary} onChange={(e) => setForm({ ...form, summary: e.target.value })} rows="3" className="w-full px-4 py-2 border border-gray-300 rounded-lg" />
+                <p className={`text-xs mt-1 ${wordCount >= 10 ? 'text-green-600 font-semibold' : 'text-gray-500'}`}>{wordCount === 0 ? 'Dikosongkan — langsung tercatat valid' : `${wordCount} kata • minimal 10 kata yang relevan`}</p>
               </div>
               <button type="submit" disabled={presensiLoading} className="w-full px-4 py-3 bg-primary text-white rounded-lg hover:bg-accent disabled:opacity-50 font-semibold transition">
                 {presensiLoading ? 'Sedang Memproses...' : 'Kirim Kehadiran'}
