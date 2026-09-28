@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "SEMPAR - Seminar Attendance Tracker",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "student-flow",
+        "label": "Student Attendance Flow",
+        "focus": ["browser", "frontend", "api", "gemini", "db"],
+        "note": "Student submits attendance with PIN validation and AI summary check"
+      },
+      {
+        "id": "admin-flow",
+        "label": "Admin Management",
+        "focus": ["admin-browser", "frontend", "api", "db"],
+        "note": "Admin creates seminars with auto-generated PIN and views attendance records"
+      }
+    ]
+  },
+  "components": [
+    { "id": "browser", "type": "external", "label": "Student Browser", "sublabel": "React SPA", "pos": [40, 300], "size": [120, 60] },
+    { "id": "admin-browser", "type": "external", "label": "Admin Browser", "sublabel": "React Admin", "pos": [40, 150], "size": [120, 60] },
+    { "id": "frontend", "type": "frontend", "label": "Frontend", "sublabel": "Vite + React", "pos": [250, 200], "size": [130, 80], "tag": "Tailwind" },
+    { "id": "api", "type": "backend", "label": "Laravel API", "sublabel": "REST :8000", "pos": [460, 200], "size": [130, 80], "tag": "Sanctum" },
+    { "id": "gemini", "type": "security", "label": "Gemini AI", "sublabel": "Validation API", "pos": [460, 80], "size": [130, 60], "tag": "Summary Check" },
+    { "id": "db", "type": "database", "label": "SQLite", "sublabel": "Seminars & Attendance", "pos": [670, 200], "size": [130, 80], "tag": "Local DB" }
+  ],
+  "connections": [
+    { "from": "browser", "to": "frontend", "label": "HTTP" },
+    { "from": "admin-browser", "to": "frontend", "label": "HTTP" },
+    { "from": "frontend", "to": "api", "label": "JSON/REST", "variant": "emphasis" },
+    { "from": "api", "to": "gemini", "label": "Validate", "fromSide": "top", "toSide": "bottom" },
+    { "from": "api", "to": "db", "label": "Query" }
+  ],
+  "cards": [
+    { "dot": "rose", "title": "Student Flow", "items": ["Enter NIM, name, PIN", "Select seminar", "Write summary (min 10 chars)", "Gemini validates relevance", "Auto-update progress bar"] },
+    { "dot": "emerald", "title": "Admin Panel", "items": ["Create seminar + auto PIN", "15min PIN expiry window", "View attendance recap", "See AI validation status"] },
+    { "dot": "violet", "title": "Tech Stack", "items": ["Frontend: React + Vite + Tailwind", "Backend: Laravel + Eloquent", "AI: Google Gemini API", "UI: Lucide icons (no emoji)"] }
+  ]
+}
